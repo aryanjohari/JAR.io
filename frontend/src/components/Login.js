@@ -1,10 +1,30 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 function Login() {
-  const handleSubmit = (e) => {
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
-    // TODO: Send to backend for authentication
-    console.log("Login:", { username, password });
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+        credentials: "include", // Send cookies for session
+      });
+      const data = await res.json();
+      if (data.success) {
+        navigate("/chat");
+      } else {
+        setError(data.error);
+      }
+    } catch (err) {
+      setError("Login failed");
+    }
   };
 
   return (
@@ -39,9 +59,7 @@ function Login() {
         >
           Login
         </button>
-        <p id="error" className="text-red-500 mt-2 hidden">
-          Invalid credentials
-        </p>
+        {error && <p className="text-red-500 mt-2">{error}</p>}
       </form>
     </div>
   );

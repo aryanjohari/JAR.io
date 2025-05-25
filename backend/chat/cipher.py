@@ -1,14 +1,16 @@
 # Dumfuck Cipher for JAR.io
-# Maps alphabets to emojis for Sakshi's personalized encoding
+    # Maps alphabets to emojis for Sakshi's personalized encoding
 
 class DumfuckCipher:
     def __init__(self):
-        # Sample mappings (replace with your actual cipher)
+        # Extended mappings for all letters
         self.encode_map = {
             'a': '😊', 'b': '😍', 'c': '💕', 'd': '🌟', 'e': '💖',
             'f': '✨', 'g': '🌹', 'h': '💌', 'i': '😘', 'j': '💞',
-            # Add remaining letters and numbers if needed
-            ' ': ' '  # Preserve spaces
+            'k': '🌈', 'l': '💫', 'm': '🌸', 'n': '🍒', 'o': '💗',
+            'p': '🌼', 'q': '🍓', 'r': '😻', 's': '💋', 't': '🌺',
+            'u': '🍑', 'v': '💓', 'w': '🌷', 'x': '🍉', 'y': '💝',
+            'z': '🌻', ' ': ' '  # Preserve spaces
         }
         self.decode_map = {v: k for k, v in self.encode_map.items()}
 
@@ -18,7 +20,6 @@ class DumfuckCipher:
 
     def decode(self, text):
         """Decode text from the Dumfuck Cipher."""
-        # Simple decoding: replace emojis with letters
         result = ''
         i = 0
         while i < len(text):
