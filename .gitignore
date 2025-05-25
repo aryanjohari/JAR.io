@@ -172,3 +172,28 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Python
+venv/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+build/
+dist/
+*.egg-info/
+
+# Node.js
+node_modules/
+dist/
+build/
+
+# AWS
+.zappa/
+*.log
+
+# Misc
+.DS_Store
+*.env
