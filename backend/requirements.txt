@@ -5,3 +5,5 @@ cryptography==41.0.3
 bcrypt==4.0.1
 boto3==1.28.0
 zappa==0.56.1
+werkzeug==2.3.8
+chat
