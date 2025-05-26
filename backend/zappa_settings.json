@@ -1,8 +1,0 @@
-{
-  "prod": {
-    "aws_region": "ap-south-1",
-    "s3_bucket": "jar-io-bucket",
-    "app_function": "app.app",
-    "runtime": "python3.9"
-  }
-}
