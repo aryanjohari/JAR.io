@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { API } from "aws-amplify";
 
 const Scrapbook = () => {
   const [entries, setEntries] = useState([]);
@@ -9,7 +9,7 @@ const Scrapbook = () => {
 
   const fetchEntries = async () => {
     try {
-      const response = await axios.get(`${apiBaseUrl}/scrapbook/list`);
+      const response = await API.get('JARioAPI','/scrapbook/list');
       setEntries(response.data);
       setError("");
     } catch (err) {
@@ -25,7 +25,7 @@ const Scrapbook = () => {
     }
 
     try {
-      await axios.post(`${apiBaseUrl}/scrapbook/create`, newEntry);
+      await API.post('JARioAPI','/scrapbook/create', newEntry);
       setNewEntry({ text: "", photo: "", date: "" });
       setError("");
       fetchEntries();

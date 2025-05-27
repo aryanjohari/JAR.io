@@ -2,12 +2,19 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: JAR.io Backend
 
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'Content-Type,Authorization'"
+      AllowOrigin: "'*'"
+
 Resources:
   JARioFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
-      Handler: handlers.lambda_handler.lambda_handler
+      Handler: lambda_handler.lambda_handler
       Runtime: python3.9
       Environment:
         Variables:
@@ -20,10 +27,73 @@ Resources:
         ScrapbookApi:
           Type: Api
           Properties:
-            Path: /scrapbook/{operation}
+            Path: /api/scrapbook/{operation}
             Method: ANY
+            Auth:
+              Authorizer: CognitoAuthorizer
+        MapApi:
+          Type: Api
+          Properties:
+            Path: /api
+            Method: /
+            Auth:
+              Authorizer: CognitoAuthorizer
+        MapApi:
+          Properties:
+            Path: /api/map/{operation}
+            Method: ANY
+        CompanionApi:
+          Type: Api
+          Properties:
+            Path: /api/companion/{operation}
+            Method: ANY
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  CognitoAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      Name: CognitoAuthorizer
+      RestApiId: !Ref ServerlessRestApi
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      ProviderARNs:
+        - !GetAtt UserPool.Arn
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: JARioUserPool
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes: []
+      UsernameConfiguration:
+        CaseSensitive: false
+      Schema:
+        - Name: username
+          AttributeDataType: String
+          Required: true
+      AutoVerifiedAttributes: []
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: JARioClient
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      PreventUserExistenceErrors: ENABLED
 
 Outputs:
   JARioApi:
     Description: API Gateway endpoint URL
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/scrapbook/{operation}"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/{feature}/{operation}"
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Description: Cognito User Pool Client ID
+    Value: !Ref UserPoolClient

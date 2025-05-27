@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from backend.src.handlers import lambda_handler
+from backend.src import lambda_handler
 
 
 @pytest.fixture()
